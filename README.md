@@ -1,13 +1,15 @@
 # AnimeFaceExtractHelper
 A helper utility to extract anime faces.
 
-Requires:
+Extract partial images for machine learning.
+
+Requires:  
 - Python 3 Interperter
 - Open CV 
 - lbpcascade_animeface  
 https://github.com/nagadomi/lbpcascade_animeface
 
-Usage:
+Usage:  
 `python AnimeFaceExtractHelper.py <input directory> <output directory>`
   
 More details will be available at Qiita
