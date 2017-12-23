@@ -91,6 +91,11 @@ class Candidate:
         tooSmall = (self.width() < MIN_SIZE) or (self.height() < MIN_SIZE)
         if(tooSmall):
             return True
+
+        aspectRate = self.width() / self.height()
+        if( (aspectRate > 1.1) or (aspectRate < 0.9) ):
+            return True
+
         return False
 
     # check this candidate is all zero
@@ -158,7 +163,7 @@ class SelectionWindow:
     # Display the window and get selection
     def run(self):
         cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_AUTOSIZE)
-        cv2.setMouseCallback(WINDOW_NAME, window.mouse_event)
+        cv2.setMouseCallback(WINDOW_NAME, self.mouse_event)
 
         self.choose_candidate(0)
 
