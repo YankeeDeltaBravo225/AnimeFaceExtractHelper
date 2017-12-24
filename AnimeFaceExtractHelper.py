@@ -9,7 +9,7 @@ import glob
 
 # execution parameters
 MIN_SIZE    = 28
-FILE_EXT    = "*.jpg"
+SAVE_EXT    = "png"
 WINDOW_NAME = "Selection"
 
 # Color definition
@@ -210,7 +210,7 @@ def parse_option():
         sys.exit(-1)
 
     input_dir = sys.argv[1]
-    image_files = glob.glob(os.path.join(input_dir, FILE_EXT))
+    image_files = glob.glob(os.path.join(input_dir, "*.*"))
     if len(image_files) == 0:
         sys.stderr.write("Error! No image file found from " + input_dir)
         sys.exit(-1)
@@ -252,7 +252,7 @@ if __name__ == '__main__':
             continue
 
         # Save to a image
-        save_file = os.path.join(save_dir, ("%d.png" % save_count))
+        save_file = os.path.join(save_dir, ("%d.%s" % (save_count, SAVE_EXT) ))
         partimage = image[selection.sy:selection.ey, selection.sx:selection.ex]
         cv2.imwrite(save_file, partimage)
 
