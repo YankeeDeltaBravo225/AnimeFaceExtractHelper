@@ -1,6 +1,7 @@
 # AnimeFaceExtractHelper
 A helper utility to extract anime faces.
-This is meant to provide semi-auto extraction.
+This is meant to provide semi-auto extraction.  
+Japanese explanation available at [Qiita](https://qiita.com/YankeeDeltaBravo225/items/320516deaaf5325adf24)
 
 ## Purpose:  
 Extract partial images for machine learning.
