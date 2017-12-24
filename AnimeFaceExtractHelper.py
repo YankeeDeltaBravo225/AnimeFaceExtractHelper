@@ -29,7 +29,6 @@ KEY_R_ARROW = 0x270000
 # Represent the cascade classifier
 #
 class Classifier:
-
     # constructor
     def __init__(self, file):
         if not os.path.isfile(file):
@@ -47,6 +46,7 @@ class Classifier:
             minNeighbors=5,
             minSize=(MIN_SIZE, MIN_SIZE))
         return areas
+
 
 #
 # Represent a candidate of classified area
@@ -104,6 +104,7 @@ class Candidate:
         if(visibility > 0):
             return False
         return True
+
 
 #
 # Represent candidate selection window
@@ -195,6 +196,7 @@ class SelectionWindow:
 
         return self.selection
 
+
 # Detect candidates from the image
 def detect(image, classifier):
     areas = classifier.detect(image)
@@ -202,6 +204,7 @@ def detect(image, classifier):
     for (x, y, w, h) in areas:
         candidates.append( Candidate( (x, y), (x+w, y+h) ) )
     return candidates
+
 
 # Parse console option and create a list of image files from it
 def parse_option():
@@ -219,11 +222,27 @@ def parse_option():
 
     return image_files, output_dir
 
+
+# Save extracted partial image
+def save_extracted_image(orig_file, selection, count):
+    # In this case, no valid area is selected
+    if (selection.invalid()):
+        print("Skipped", orig_file)
+        return False
+
+    # Save to a image
+    save_file = os.path.join(save_dir, ("%d.%s" % (save_count, SAVE_EXT)))
+    partimage = image[selection.sy:selection.ey, selection.sx:selection.ex]
+    cv2.imwrite(save_file, partimage)
+
+    print("File saved as ", save_file, ", corrdinate:", selection.locate_start(), selection.locate_end())
+    return True
+
 # Main funciton of this script
 if __name__ == '__main__':
 
     # Get image filenames from console arguments
-    image_files, save_dir = parse_option()
+    files, save_dir = parse_option()
 
     # Setup Classifier (animeface)
     classifier = Classifier("lbpcascade_animeface.xml")
@@ -234,7 +253,7 @@ if __name__ == '__main__':
 
     # Detect, extract and save for each image files
     save_count = 0
-    for file in image_files:
+    for file in files:
 
         # Read the image file
         image = cv2.imread(file, cv2.IMREAD_COLOR)
@@ -246,15 +265,7 @@ if __name__ == '__main__':
         window = SelectionWindow(image, candidates)
         selection = window.run()
 
-        # In this case, no valid area is selected
-        if( (selection == None) or selection.invalid() ):
-            print("Skipped", file)
-            continue
-
-        # Save to a image
-        save_file = os.path.join(save_dir, ("%d.%s" % (save_count, SAVE_EXT) ))
-        partimage = image[selection.sy:selection.ey, selection.sx:selection.ex]
-        cv2.imwrite(save_file, partimage)
-
-        print("File saved as ", save_file, ", corrdinate:", selection.locate_start(), selection.locate_end())
-        save_count += 1
+        # Save extracted partial image
+        save_result = save_extracted_image(file, selection, save_count)
+        if (save_result == True):
+            save_count += 1
